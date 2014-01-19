@@ -146,7 +146,7 @@ final class DayOfWeek extends Enum\Simple {
 
 Well that didn't do much, and it is still extremely ugly and verbose! 
 
-Relax, There is a solution: 
+Relax, there is a solution: 
 
 <a name="day-of-week">
 ```php
@@ -173,7 +173,7 @@ final class DayOfWeek extends \Enum\Simple {
 }
 ```
 
-That's better! 
+That's better! Note that there will be no difference in functionality between the above three examples.
 
 If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing their method name as a string.
 
@@ -204,7 +204,9 @@ echo DayOfWeek::Saturday(); //Today could be saturday.
 
 Serialization
 =============
-Enums values can also be fully serialized/unserialized using the `Enum\Base::Serialize(Enum\Base $Enum)` and `Enum\Base::Unserialize(string $SerializedEnum)` repectively. This will work for any defined enum. If you want to un/serialize and verify an enum to be of a specific type, you can can call either method in the context of the enum to verify:
+Enums values can also be fully serialized/unserialized using the `Enum\Base::Serialize(Enum\Base $Enum)` and `Enum\Base::Unserialize(string $SerializedEnum)` repectively. This will work for any defined enum. 
+
+If you want to un/serialize an enum of a specific type, you can can call either method in the context of the required enum type:
 
 ```php
 $Monday = DayOfWeek::Monday();
