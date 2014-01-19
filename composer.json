@@ -10,7 +10,7 @@
             "email": "elliot@aanet.com.au"
         }
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0"
