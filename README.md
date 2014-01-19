@@ -27,12 +27,12 @@ final class Boolean extends \Enum\Simple {
     public static function False() {
         return self::Representing('False');
     }
-    
 }
 ```
 
-Congrats, we have successfully reimplemented the boolean using Hipster enums.
+Congrats, we have successfully reimplemented the boolean using Hipster enums. 
 Lets test it out:
+
 ```php
 var_export(Boolean::True() === Boolean::True()); //true
 var_export(Boolean::True() === Boolean::False()); //false
@@ -50,9 +50,59 @@ public function Not() {
 
 And test it out:
 ```php
-Boolean::True()->Not() === Boolean::True();// false
+Boolean::True()->Not() === Boolean::True(); //false
+Boolean::True() === Boolean::False()->Not(); //true
+Boolean::False()->Not()->Not() === Boolean::False(); //true
 ```
 
+Cool. But that was useless, lets do something useful.
+
+```php
+
+final class DayOfWeek extends Enum\Simple {
+    
+    public static function Monday() {
+        return self::Representing('Monday');
+    }
+    
+    public static function Tuesday() {
+        return self::Representing('Tuesday');
+    }
+    
+    public static function Wednesday() {
+        return self::Representing('Wednesday');
+    }
+    
+    public static function Thursday() {
+        return self::Representing('Thursday');
+    }
+    
+    public static function Friday() {
+        return self::Representing('Friday');
+    }
+    
+    public static function Saturday() {
+        return self::Representing('Saturday');
+    }
+    
+    public static function Sunday() {
+        return self::Representing('Sunday');
+    }
+    
+    public function GetTomorrow() {
+        if($this === self::Sunday()) {
+            return self::Monday();
+        }
+        else {
+            $All = self::All();
+            return $All[array_search($this, $All) + 1];
+        }
+    }
+}
+
+```
+
+Wow that is verbose! Lets shrink it down a little:
 
 ```php
 final class DayOfWeek extends \Enum\Simple {
