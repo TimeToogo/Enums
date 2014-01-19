@@ -1,17 +1,15 @@
-PHP-Enum
-========
-
 Hipster enums for PHP 5.4+
+==========================
 
-Hipster Summary
+Summary
 ===============
 
 - An enum is a group of possible values: [`DayOfWeek`](#day-of-week)
-- An an value of an enum represents an underlying value: `DayOfWeek::Thursday()->GetValue()`
-- Two enums of the same type, representing the same value are [equal](#comparisons-and-equality): `DayOfWeek::Thursday() === DayOfWeek::Thursday()`
+- An an instance of an enum represents an underlying value: `DayOfWeek::Thursday()->GetValue()`
+- Two enum instances of the same type, representing the same value are [equal](#comparison-and-equality): `DayOfWeek::Thursday() === DayOfWeek::Thursday()`
 - Enums are type safe: `function SetDay(DayOfWeek $DayOfWeek)`
-- Enums are extendable: `DayOfWeek::Thursday()->GetTomorrow()`
-- Enums are [serializable](#serialization): `DayOfWeek::Serialize(DayOfWeek::Thursday())`
+- Enums are extensible: `DayOfWeek::Thursday()->GetTomorrow()`
+- Enum instances are [serializable](#serialization): `DayOfWeek::Serialize(DayOfWeek::Thursday())`
 - Enum values can be represented as a [string](#conversion-to-string): `(string)DayOfWeek::Thursday()`
 
 An introduction
@@ -167,7 +165,6 @@ That's better!
 
 If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing their method name as a string.
 
-
 Conversion To String
 ====================
 
@@ -193,6 +190,38 @@ final class DayOfWeek extends \Enum\Simple {
 echo DayOfWeek::Saturday(); //Today could be saturday.
 ```
 
+Serialization
+=============
+Enums values can also be fully serialized/unserialized using the `Enum\Base::Serialize(Enum\Base $Enum)` and `Enum\Base::Unserialize(string $SerializedEnum)` repectively. This will work for any defined enum. If you want to un/serialize and verify an enum to be of a specific type, you can can call either method in the context of the enum to verify:
+
+```php
+$Monday = DayOfWeek::Monday();
+
+$SerializedMonday = Enum\Base::Serialize($Monday);//Ok
+$SerializedMonday = DayOfWeek::Serialize($Monday);//Ok
+$SerializedMonday = MonthOfYear::Serialize($Monday);//ERROR!
+
+$Monday = Enum\Base::Unserialize($SerializedMonday); //Ok
+$Monday = DayOfWeek::Unserialize($SerializedMonday); //Ok
+$Monday = MonthOfYear::Unserialize($SerializedMonday); //ERROR!
+```
+
+Comparison and Equality
+=======================
+An two enum instances of the same type, representing the same value must be equal. Comparison results using `===` operator can be seen below.
+
+```php
+$Monday = DayOfWeek::Monday();
+$Tuesday = DayOfWeek::Tuesday();
+
+$Monday === DayOfWeek::Monday(); //true
+$Monday === DayOfWeek::FromValue(DayOfWeek::Monday()->GetValue()); //true
+$Monday === DayOfWeek::Unserialize(DayOfWeek::Serialize(DayOfWeek::Monday())); //true
+$Monday === $Tuesday; //false
+```
+
+As you can see, within a enum there is only ever one instance representing any given value.
+
 Clean comprehension API
 =======================
  - `Enum\Base::Map(callable $MappingCallback)` Maps the enum instances with the supplied callback
@@ -203,7 +232,7 @@ Clean comprehension API
  - `FirstOrDefaultByValue(callable $MappingCallback)` 
 
 Usage
-==========
+=====
 ```php
 final class DayOfWeek extends \Enum\Simple {
     use \Enum\Values {
@@ -296,20 +325,4 @@ $SouthAfrica = Country::SouthAfrica();
 echo sprintf('%s has a population density of: %s/Km²',
         $SouthAfrica,
         $SouthAfrica->PopulationDensity());
-```
-
-Serialization
-=============
-Enums values can also be fully serialized/unserialized using the `Enum\Base::Serialize(Enum\Base $Enum)` and `Enum\Base::Unserialize(string $SerializedEnum)` repectively. This will work for any defined enum. If you want to un/serialize and verify an enum to be of a specific type, you can can call either method in the context of the enum to verify:
-
-```php
-$Monday = DayOfWeek::Monday();
-
-$SerializedMonday = Enum\Base::Serialize($Monday);//Ok
-$SerializedMonday = DayOfWeek::Serialize($Monday);//Ok
-$SerializedMonday = Country::Serialize($Monday);//ERROR!
-
-$Monday = Enum\Base::Unserialize($SerializedMonday); //Ok
-$Monday = DayOfWeek::Unserialize($SerializedMonday); //Ok
-$Monday = Country::Unserialize($SerializedMonday); //ERROR!
 ```
