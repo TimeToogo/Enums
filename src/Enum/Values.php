@@ -3,7 +3,11 @@
 namespace Enum;
 
 trait Values {
+    
     /**
+     * Provides a template method to for representing the method name.
+     * This can be aliased in an enum class.
+     * 
      * @return Enum|null
      */
     final public static function _() {

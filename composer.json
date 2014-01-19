@@ -1,7 +1,7 @@
 {
     "name": "timetoogo/php-enum",
     "description": "Eccentric enums for PHP 5.4+",
-    "keywords": ["php", "enum"],
+    "keywords": ["enumeration", "enum"],
     "homepage": "http://www.github.com/TimeToogo/PHP-Enum",
     "license": "MIT",
     "authors": [

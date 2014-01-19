@@ -8,10 +8,12 @@ namespace Enum;
  * 
  * @author Elliot Levin <elliot@aanet.com.au>
  */
-abstract class Weak extends Base {
+class Dynamic extends Base {
+    
     public static function Representing($Value) {
         return forward_static_call(['parent', __FUNCTION__], $Value);
     }
+    
 }
 
 ?>

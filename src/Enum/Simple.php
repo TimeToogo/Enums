@@ -8,7 +8,7 @@ namespace Enum;
  * 
  * @author Elliot Levin <elliot@aanet.com.au>
  */
-abstract class Strict extends Base {
+abstract class Simple extends Base {
     private static $IsInitializing = array();
     private static $IsInitialized = array();
     private static $RepresentedData = array();
@@ -34,7 +34,7 @@ abstract class Strict extends Base {
     
     /**
      * @param mixed $Value The value represented by the enum
-     * @return Strict|null
+     * @return Simple|null
      */
     public static function Parse($Value) {
         $EnumClassName = get_called_class();
@@ -42,38 +42,15 @@ abstract class Strict extends Base {
             throw new \BadMethodCallException("Cannot parse value as $EnumClassName");
         }
         if(array_search($Value, self::$RepresentedData[$EnumClassName]) === false) {
-            return false;
+            return null;
         }
         else {
             return static::Representing($Value);
         }
     }
-    
-    /**
-     * 
-     * @param callable $FilterCallback
-     * @return Strict[] The matching enums
-     */
-    final protected static function Filter(callable $FilterCallback) {
-        return array_filter(static::Instances(), 
-                function (self $EnumInstance) use(&$FilterCallback) {
-                    return $FilterCallback($EnumInstance->GetValue());
-                });
-    }
-    
-    /**
-     * 
-     * @param callable $FilterCallback
-     * @return Strict[] The matching enums
-     */
-    final protected static function FirstOrDefault(callable $FilterCallback, $Default = null) {
-        $FilteredEnums = static::Filter($FilterCallback);
-        
-        return count($FilteredEnums) > 0 ? reset($FilteredEnums) : $Default;
-    }
 
     /**
-     * Initialize defined enum values by invoking all static methods.
+     * Initialize defined enum instance by invoking all appropriate static methods.
      * 
      * @return void
      */
@@ -86,7 +63,7 @@ abstract class Strict extends Base {
         
         self::$RepresentedData[$EnumClassName] = array();
         self::$IsInitializing[$EnumClassName] = true;
-
+        
         $Reflection = new \ReflectionClass($EnumClassName);
         $Methods = array_diff(get_class_methods($EnumClassName), get_class_methods(__CLASS__));
         

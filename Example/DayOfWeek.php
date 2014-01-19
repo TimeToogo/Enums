@@ -2,7 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
-final class DayOfWeek extends Enum\Strict {
+final class DayOfWeek extends Enum\Simple {
     use Enum\Values {
         _ as Monday;
         _ as Tuesday;

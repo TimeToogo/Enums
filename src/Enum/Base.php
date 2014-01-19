@@ -12,7 +12,6 @@ abstract class Base implements \Serializable {
     private $Value;
     private $SerializedValue;
     
-    private static $HashCache = array();
     private static $Instances = array();
 
     private function __construct($Value, $SerializedValue) {
@@ -32,7 +31,7 @@ abstract class Base implements \Serializable {
     /**
      * Gets the enum representing the supplied value.
      * NOTE: The supplied value is compared by value, two instances containing
-     * the same data will be considered equal.
+     * the same data will be considered equal (By design).
      * 
      * @param mixed $Value The value represented by the enum.
      * @return static The enum instance
@@ -40,15 +39,10 @@ abstract class Base implements \Serializable {
     protected static function Representing($Value) {
         static::VerifyValue($Value);
         
-        $EnumClassName = get_called_class();        
-        
-        if($EnumClassName === __CLASS__ || (new \ReflectionClass($EnumClassName))->isAbstract()) {
-            throw new \BadMethodCallException("Cannot create enum instance of $EnumClassName: enum class cannot be abstract");
-        }
+        $EnumClassName = static::VerifyValidCalledClass();
         
         if(!isset(self::$Instances[$EnumClassName])) {
             self::$Instances[$EnumClassName] = array();
-            self::$HashCache[$EnumClassName] = array();
         }
         
         $SerializedValue = serialize($Value);
@@ -63,16 +57,42 @@ abstract class Base implements \Serializable {
     }
     
     protected static function VerifyValue($Value) { }
+        
+    /**
+     * @return Base[]
+     */
+    final public static function All() {
+        return self::$Instances[static::VerifyValidCalledClass()];
+    }
     
     /**
-     * Gets the value associated with the current enum.
      * 
-     * @return mixed The value associated with the enum
+     * @param callable $FilterCallback
+     * @return Base[] The matching enums
      */
-    final protected static function Instances() {
-        return self::$Instances[get_called_class()];
+    final protected static function Filter(callable $FilterCallback) {
+        return array_filter(static::All(), 
+                function (self $EnumInstance) use(&$FilterCallback) {
+                    return $FilterCallback($EnumInstance->Value);
+                });
     }
-
+    
+    /**
+     * Returns the first 
+     * 
+     * @param callable $FilterCallback
+     * @return Base[] The matching enums
+     */
+    final protected static function FirstOrDefault(callable $FilterCallback, $Default = null) {
+        foreach(static::All() as $EnumInstance) {
+            if($FilterCallback($EnumInstance->Value)) {
+                return $EnumInstance;
+            }
+        }
+        
+        return $Default;
+    }
+    
     final public function __clone() {
         throw new \Exception('Enum cannot be cloned');
     }
@@ -81,13 +101,22 @@ abstract class Base implements \Serializable {
         return self::SerializeEnum($this);
     }
     
+    private static function VerifyValidCalledClass() {
+        $CalledClass = get_called_class();
+        if($CalledClass === __CLASS__ || (new \ReflectionClass($CalledClass))->isAbstract()) {
+            throw new \BadMethodCallException("Static calls to $CalledClass are disallowed.");
+        }
+        
+        return $CalledClass;
+    }
+    
     /**
      * DO NOT CALL:
      * Unserialize Enum with {Enum}::UnserializeEnum(\$EnumValue)
      */
     public function unserialize($SerializedEnum) {
         $CalledClassName = get_called_class();
-        throw new \Exception("Unserialize Enum with $CalledClassName::UnserializeEnum(\$EnumValue)");
+        throw new \Exception("Unserialize Enum with $CalledClassName::UnserializeEnum(\$SerializedEnum)");
     }
     
     public static function __set_state($Data) {
@@ -152,7 +181,7 @@ abstract class Base implements \Serializable {
         if(!is_subclass_of($EnumClassName, $CalledClassName)) {
             throw new \InvalidArgumentException("Cannot unserialize enum: '$EnumClassName' is not a valid " . $CalledClassName);
         }
-
+        
         $Value = unserialize(substr($EnumParts[1], 1, -1));
         $EnumInstance = $EnumClassName::Representing($Value);
         
