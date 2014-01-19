@@ -177,6 +177,21 @@ That's better! Note that there will be no difference in functionality between th
 
 If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing the method name string.
 
+Using this trait the equivalent Boolean would become:
+
+```php
+final class Boolean extends \Enum\Simple {
+    use \Enum\Values {
+        _ as True;
+        _ as False;
+    }
+    
+    public function Not() {
+        return $this === self::True() ? self::False() : self::True();
+    }
+}
+```
+
 Conversion To String
 ====================
 
