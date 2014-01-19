@@ -2,7 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
-final class Country extends Enum\Simple {
+class Country extends Enum\Simple {
     
     public static function USA() {
         return self::Representing(
@@ -32,7 +32,7 @@ final class Country extends Enum\Simple {
     }
     
     public static function FromName($Name) {
-        return self::FirstOrDefault(
+        return self::FirstOrDefaultByValue(
                 function ($Value) use ($Name) {
                     return $Value['Name'] === $Name;
                 });
@@ -48,5 +48,11 @@ final class Country extends Enum\Simple {
         return $Country['Population'] / $Country['Area'];
     }
 }
+/*
+$SouthAfrica = Country::SouthAfrica();
 
+echo sprintf('%s has a population density of: %s/Km²',
+        $SouthAfrica,
+        $SouthAfrica->PopulationDensity());
+*/
 ?>

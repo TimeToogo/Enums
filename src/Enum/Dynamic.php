@@ -10,6 +10,10 @@ namespace Enum;
  */
 class Dynamic extends Base {
     
+    /**
+     * {@inheritDoc}
+     * @return static
+     */
     public static function Representing($Value) {
         return forward_static_call(['parent', __FUNCTION__], $Value);
     }

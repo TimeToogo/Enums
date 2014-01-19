@@ -10,19 +10,9 @@ namespace Enum;
  */
 abstract class Simple extends Base {
     private static $IsInitializing = array();
-    private static $IsInitialized = array();
     private static $RepresentedData = array();
-    
-    /**
-     * {@inheritDoc}
-     * @return static
-     */
-    protected static function Representing($Value) {
-        self::Initialize(get_called_class());
-        return forward_static_call(['parent', __FUNCTION__], $Value);
-    }
-    
-    protected static function VerifyValue($Value) {
+        
+    final protected static function VerifyValue($Value) {
         $EnumClassName = get_called_class();
         if(isset(self::$IsInitializing[$EnumClassName])) {
             self::$RepresentedData[$EnumClassName][] = $Value;
@@ -36,7 +26,7 @@ abstract class Simple extends Base {
      * @param mixed $Value The value represented by the enum
      * @return Simple|null
      */
-    public static function Parse($Value) {
+    final public static function Parse($Value) {
         $EnumClassName = get_called_class();
         if($EnumClassName === __CLASS__) {
             throw new \BadMethodCallException("Cannot parse value as $EnumClassName");
@@ -54,10 +44,8 @@ abstract class Simple extends Base {
      * 
      * @return void
      */
-    private static function Initialize($EnumClassName) {
-        if($EnumClassName === __CLASS__ ||
-                isset(self::$IsInitialized[$EnumClassName]) || 
-                isset(self::$IsInitializing[$EnumClassName])) {
+    final protected static function Initialize($EnumClassName) {
+        if(isset(self::$IsInitializing[$EnumClassName])) {
             return;
         }
         
@@ -77,8 +65,8 @@ abstract class Simple extends Base {
                 $MethodReflection->invoke(null);
             }
         }
+        
         unset(self::$IsInitializing[$EnumClassName]);
-        self::$IsInitialized[$EnumClassName] = true;
     }
 }
 
