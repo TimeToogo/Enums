@@ -8,7 +8,7 @@ Add package to `composer.json`.
 ```js
 {
     "require": {
-        "timetoogo/hipster-enums": "1.0"
+        "timetoogo/hipster-enums": "1.0.0"
     }
 }
 ```
