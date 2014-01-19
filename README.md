@@ -175,7 +175,7 @@ final class DayOfWeek extends \Enum\Simple {
 
 That's better! Note that there will be no difference in functionality between the above three examples.
 
-If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing their method name as a string.
+If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing the method name string.
 
 Conversion To String
 ====================
