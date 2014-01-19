@@ -13,7 +13,7 @@ Add package to `composer.json`.
 }
 ```
 
-Or manually `require {Path to enum}/Loader.php`
+Or manually `require {Path to Enum}/Loader.php`
 
 Summary
 =======
