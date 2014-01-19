@@ -1,8 +1,20 @@
 Hipster enums for PHP 5.4+
 ==========================
 
+Installation
+============
+Add package to `composer.json`.
+
+```js
+{
+    "require": {
+        "timetoogo/hipster-enums": "1.0"
+    }
+}
+```
+
 Summary
-===============
+=======
 
 - An enum is a group of possible values: [`DayOfWeek`](#day-of-week)
 - An an instance of an enum represents an underlying value: `DayOfWeek::Thursday()->GetValue()`
