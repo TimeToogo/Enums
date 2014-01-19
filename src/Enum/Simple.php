@@ -10,48 +10,35 @@ namespace Enum;
  */
 abstract class Simple extends Base {
     private static $IsInitializing = array();
-    private static $RepresentedData = array();
-        
+
     final protected static function VerifyValue($Value) {
-        $EnumClassName = get_called_class();
-        if(isset(self::$IsInitializing[$EnumClassName])) {
-            self::$RepresentedData[$EnumClassName][] = $Value;
+        if(!isset(self::$IsInitializing[get_called_class()]) && !static::HasValue($Value)) {
+            $EnumClassName = get_called_class();
+            throw new \InvalidArgumentException(sprintf(
+                    "Supplied value is not valid for $EnumClassName, Allowed values: %s. %s given",
+                    
+                    implode(', ', static::MapValues(function ($Value) { 
+                        return var_export($Value, true); 
+                    })),
+                    var_export($Value, true)
+                    ));
         }
-        else if(array_search($Value, self::$RepresentedData[$EnumClassName]) === false) {
-            throw new \InvalidArgumentException("Supplied value is not valid for $EnumClassName");
-        }
+        static::VerifyRepresentedValue($Value);
     }
-    
-    /**
-     * @param mixed $Value The value represented by the enum
-     * @return Simple|null
-     */
-    final public static function Parse($Value) {
-        $EnumClassName = get_called_class();
-        if($EnumClassName === __CLASS__) {
-            throw new \BadMethodCallException("Cannot parse value as $EnumClassName");
-        }
-        if(array_search($Value, self::$RepresentedData[$EnumClassName]) === false) {
-            return null;
-        }
-        else {
-            return static::Representing($Value);
-        }
-    }
+    protected static function VerifyRepresentedValue($Value) {}
 
     /**
      * Initialize defined enum instance by invoking all appropriate static methods.
      * 
      * @return void
      */
-    final protected static function Initialize($EnumClassName) {
+    final protected static function Initialize($EnumClassName) {     
         if(isset(self::$IsInitializing[$EnumClassName])) {
             return;
         }
         
-        self::$RepresentedData[$EnumClassName] = array();
         self::$IsInitializing[$EnumClassName] = true;
-        
+           
         $Reflection = new \ReflectionClass($EnumClassName);
         $Methods = array_diff(get_class_methods($EnumClassName), get_class_methods(__CLASS__));
         

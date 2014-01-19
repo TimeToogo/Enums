@@ -14,7 +14,7 @@ abstract class Base {
     
     private static $IsInitialized = array();
     private static $Instances = array();
-    private static $InstanceValues = array();
+    private static $InstanceRepresentedValues = array();
 
     private function __construct($Value, $SerializedValue) {
         $this->Value = $Value;
@@ -39,7 +39,7 @@ abstract class Base {
      * @return static The enum instance
      */
     protected static function Representing($Value) {
-        $EnumClassName = static::VerifyValidCalledClass();
+        $EnumClassName = static::VerifyValidCalledClass(__FUNCTION__);
         
         static::InitializeIfNot($EnumClassName);
         static::VerifyValue($Value);        
@@ -48,7 +48,7 @@ abstract class Base {
         if(!isset(self::$Instances[$EnumClassName][$SerializedValue])) {
             $EnumInstance = new static($Value, $SerializedValue);
             self::$Instances[$EnumClassName][$SerializedValue] = $EnumInstance;
-            self::$InstanceValues[$EnumClassName][$SerializedValue] = $Value;
+            self::$InstanceRepresentedValues[$EnumClassName][$SerializedValue] = $Value;
             
             return $EnumInstance;
         }
@@ -59,7 +59,7 @@ abstract class Base {
         if(!isset(self::$IsInitialized[$EnumClassName])) {
             
             self::$Instances[$EnumClassName] = array();
-            self::$InstanceValues[$EnumClassName] = array();
+            self::$InstanceRepresentedValues[$EnumClassName] = array();
             self::$IsInitialized[$EnumClassName] = true;
             
             static::Initialize($EnumClassName);
@@ -69,24 +69,46 @@ abstract class Base {
     protected static function VerifyValue($Value) { }
     
     /**
-     * @return Base[]
+     * @param mixed $RepresentedValue The value represented by the enum
+     * @return boolean
      */
-    final public static function All() {
-        $EnumClassName = static::VerifyValidCalledClass();
-        static::InitializeIfNot($EnumClassName);
-        return array_values(self::$Instances[$EnumClassName]);
+    final public static function HasValue($RepresentedValue) {
+        $EnumClassName = static::VerifyValidCalledClass(__FUNCTION__);
+        return array_search($RepresentedValue, self::$InstanceRepresentedValues[$EnumClassName]) !== false;
     }
     
     /**
+     * @param mixed $RepresentedValue The value represented by the enum
+     * @return Base|null
+     */
+    final public static function FromValue($RepresentedValue) {
+        return static::HasValue($RepresentedValue) ?
+                static::Representing($RepresentedValue) : null;
+    }
+    
+    /**
+     * Returns every enum instance for the called class.
+     * 
+     * @return Base[]
+     */
+    final public static function All() {
+        $EnumClassName = static::VerifyValidCalledClass(__FUNCTION__);
+        static::InitializeIfNot($EnumClassName);
+        return array_values(self::$Instances[$EnumClassName]);
+    }
+        
+    /**
+     * Returns every represented value for the called class or the supplied array if not null.
+     * 
      * @param array|null $EnumInstances
      * @return mixed[]
      */
-    final public static function RepresentedValues(array $EnumInstances = null) {
-        $EnumClassName = static::VerifyValidCalledClass();
+    final public static function Values(array $EnumInstances = null) {
+        $EnumClassName = static::VerifyValidCalledClass(__FUNCTION__);
         static::InitializeIfNot($EnumClassName);
         
         return array_values($EnumInstances === null ? 
-                self::$InstanceValues[$EnumClassName] :
+                self::$InstanceRepresentedValues[$EnumClassName] :
                 array_map(
                         function ($Enum) {
                             static::VerifyEnumValue($Enum, 'Cannot get value:', true);
@@ -116,7 +138,7 @@ abstract class Base {
     final public static function MapValues(callable $MappingCallback) {
         return array_map(
                 function (self $EnumInstance) use(&$MappingCallback) {
-                    return $FilterCallback($EnumInstance->Value);
+                    return $MappingCallback($EnumInstance->Value);
                 },
                 static::All());
     }
@@ -156,7 +178,7 @@ abstract class Base {
      * @param callable $FilterCallback
      * @return Base[] The matching enums
      */
-    final public static function FirstOrDefault(array $Enums, $Default = null) {
+    final public static function FirstOrDefault(callable $FilterCallback, $Default = null) {
         foreach($Enums as $EnumInstance) {
             if($FilterCallback($EnumInstance)) {
                 return $EnumInstance;
@@ -183,10 +205,10 @@ abstract class Base {
         return $Default;
     }
     
-    private static function VerifyValidCalledClass() {
+    private static function VerifyValidCalledClass($Method) {
         $CalledClass = get_called_class();
         if($CalledClass === __CLASS__ || (new \ReflectionClass($CalledClass))->isAbstract()) {
-            throw new \BadMethodCallException("Static calls to $CalledClass are disallowed.");
+            throw new \BadMethodCallException("Static calls to $CalledClass::$Method must be peformed in a non-abstract context.");
         }
         
         return $CalledClass;
@@ -234,7 +256,7 @@ abstract class Base {
     }
     
     final static public function Serialize(self $EnumValue, $AllowSubclasses = false) {
-        static::VerifyEnumValue($EnumValue, 'Cannot serialize supplied enum');
+        static::VerifyEnumValue($EnumValue, 'Cannot serialize supplied enum', $AllowSubclasses);
         
         return  get_class($EnumValue) . '::{' . $EnumValue->SerializedValue . '}';
     }

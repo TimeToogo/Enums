@@ -6,7 +6,7 @@ $Start = microtime(true);
 $Rounds = 10000;
 
 for($Count = 0; $Count < $Rounds; $Count++) {
-    Country::RepresentedValues();
+    Country::Values();
 }
 
 $End = microtime(true);

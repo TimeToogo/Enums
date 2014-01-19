@@ -5,7 +5,7 @@ namespace Enum;
 trait Values {
     
     /**
-     * Provides a template method to for representing the method name.
+     * Provides a template method for enum values representing the method name.
      * This can be aliased in an enum class.
      * 
      * @return Enum|null
