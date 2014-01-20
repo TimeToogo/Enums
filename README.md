@@ -177,6 +177,8 @@ final class DayOfWeek extends \Enum\Simple {
 
 That's better! Note that there will be no difference in functionality between the above three examples.
 
+**Note that using the `\Enum\Values` only works for PHP >5.4.16**
+
 If your enums values are represented by the method names, you can utilise the `\Enum\Values` trait. This trait contains a single static method `_`. You can alias this method to the required enum values, and the aliased methods will return the enum representing the method name string.
 
 Using this trait the equivalent Boolean would become:
