@@ -297,7 +297,7 @@ final class DayOfWeek extends \Enum\Simple {
 A more sophisticated example
 ============================
 
-If your requirements are more complex, hipster enums can represent any type of value (but `Closure` cannot be serialized):
+If your requirements are more complex, hipster enums can represent any serializable value:
 
 ```php
 class Country extends Enum\Simple {
