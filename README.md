@@ -23,7 +23,7 @@ Summary
 - Two enum instances of the same type, representing the same value are [equal](#comparison-and-equality): `DayOfWeek::Thursday() === DayOfWeek::Thursday()`
 - Enums are type safe: `function SetDay(DayOfWeek $DayOfWeek)`
 - Enums are extensible: `DayOfWeek::Thursday()->GetTomorrow()`
-- Enum instances are [serializable](#serialization): `DayOfWeek::Serialize(DayOfWeek::Thursday())`
+- Enum values are [serializable](#serialization): `DayOfWeek::Serialize(DayOfWeek::Thursday())`
 - Enum values can be represented as a [string](#conversion-to-string): `(string)DayOfWeek::Thursday()`
 
 An introduction
