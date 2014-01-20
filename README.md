@@ -146,7 +146,7 @@ final class DayOfWeek extends Enum\Simple {
 }
 ```
 
-Well that didn't do much, and it is still extremely ugly and verbose! 
+Well that didn't do much, and it is still extremely verbose! And ugly.
 
 Relax, there is a solution: 
 
