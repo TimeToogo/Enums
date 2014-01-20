@@ -4,7 +4,7 @@ require_once '../vendor/autoload.php';
 
 //I cannot believe this is valid php
 final class Boolean extends \Enum\Simple {
-
+    
     public static function True() {
         return self::Representing('True');
     }
@@ -15,6 +15,14 @@ final class Boolean extends \Enum\Simple {
     
     public function Not() {
         return $this === self::True() ? self::False() : self::True();
+    }
+    
+    public function AndAlso(Boolean $OtherBoolean) {
+        return $this === self::True() && $OtherBoolean === self::True() ? self::True() : self::False();
+    }
+    
+    public function OrAlso(Boolean $OtherBoolean) {
+        return $this === self::True() || $OtherBoolean === self::True() ? self::True() : self::False();
     }
 }
 /*
