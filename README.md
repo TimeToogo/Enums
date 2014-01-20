@@ -53,7 +53,7 @@ var_export(Boolean::False() === Boolean::False()); //true
 ```
 
 Great it works, 
-Lets do something crazy and reimplement `!` operator.
+now lets reimplement `!` operator.
 
 ```php
 final class Boolean extends \Enum\Simple {
