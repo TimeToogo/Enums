@@ -20,7 +20,7 @@ Summary
 
 - An enum is a group of possible values: [`DayOfWeek`](#day-of-week)
 - An an instance of an enum represents an underlying value: `DayOfWeek::Thursday()->GetValue()`
-- Two enum instances of the same type, representing the same value are [equal](#comparison-and-equality): `DayOfWeek::Thursday() === DayOfWeek::Thursday()`
+- Two enum instances of the same type, representing the same value are [identical](#comparison-and-equality): `DayOfWeek::Thursday() === DayOfWeek::Thursday()`
 - Enums are type safe: `function SetDay(DayOfWeek $DayOfWeek)`
 - Enums are extensible: `DayOfWeek::Thursday()->GetTomorrow()`
 - Enum values are [serializable](#serialization): `DayOfWeek::Serialize(DayOfWeek::Thursday())`
