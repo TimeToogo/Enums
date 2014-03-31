@@ -1,4 +1,4 @@
-Hipster enums for PHP 5.4+
+Enums for PHP 5.4+
 ==========================
 
 Installation
@@ -8,7 +8,7 @@ Add package to `composer.json`.
 ```js
 {
     "require": {
-        "timetoogo/hipster-enums": "*"
+        "timetoogo/enums": "*"
     }
 }
 ```
@@ -42,7 +42,7 @@ final class Boolean extends \Enum\Simple {
 }
 ```
 
-Congrats, we have successfully reimplemented the boolean using Hipster enums.
+Congrats, we have successfully reimplemented the boolean using enums.
 
 Lets test it out:
 
@@ -297,7 +297,7 @@ final class DayOfWeek extends \Enum\Simple {
 A more sophisticated example
 ============================
 
-If your requirements are more complex, hipster enums can represent any serializable value:
+If your requirements are more complex, enums can represent any serializable value:
 
 ```php
 class Country extends Enum\Simple {
